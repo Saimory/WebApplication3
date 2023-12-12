@@ -1,0 +1,38 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.site-header {
+    display: flex;
+    justify-content: flex-start;
+    background-color: #75bbfd;
+}
+
+.top_list {
+    display: flex;
+    gap: 40px;
+    justify-content: flex-end;
+    list-style-type: none;
+    align-items: flex-end;
+}
+
+.inline-site-header {
+    display: flex;
+    flex-direction: row;
+    width: 1000px;
+}

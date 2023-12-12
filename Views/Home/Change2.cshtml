@@ -1,0 +1,24 @@
+﻿@model WebApplication3.Models.Question
+@{
+    ViewData["Change2"] = "Изменение вопроса";
+}
+
+<div id="changeQuestionContainer">
+    <h4>Выбранный вопрос:</h4>
+    <table>
+        <tr><td>ID:</td> <td>@Model.Id</td></tr>
+        <tr><td>Вопрос:</td><td> @Model.Matter</td></tr>
+        <tr><td>Ответ:</td><td> @Model.Answer</td></tr>
+    </table>
+
+    <form method="post" asp-action="Change2">
+        <input type="hidden" asp-for="Id" />
+
+        <table>
+            <h4>Введите измененный вопрос:</h4>
+            <tr><td><label for="newMatter">Новый вопрос:</label></td><td><input type="text" name="matter" id="newMatter" class="form-control" /></td></tr>
+            <tr><td><label for="newAnswer">Новый ответ:</label></td><td><input type="text" name="answer" id="newAnswer" class="form-control" /></td></tr>
+            <tr><td></td><td><button type="submit" class="btn btn-primary">Сохранить</button></td></tr>
+        </table>
+    </form>
+</div>

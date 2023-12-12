@@ -1,0 +1,135 @@
+﻿@model IEnumerable<WebApplication3.Models.Question>
+@{
+    ViewData["Title"] = "Список вопросов";
+}
+
+<style>
+    #questionsList {
+        margin-top: 20px;
+    }
+
+    .question-container {
+        margin-bottom: 30px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .question {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .answer {
+        margin-top: 10px;
+    }
+
+    .answer-input {
+        margin-top: 10px;
+    }
+
+    .submit-button {
+        margin-top: 5px; 
+        padding: 8px 15px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .question-container div {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .answer-input,
+    .submit-button {
+        margin-left: 10px;
+    }
+</style>
+
+<form method="post" id="setting" data-max-questions="@Model.Count()">
+    <h3>Генерация случайных вопросов:</h3>
+    <input type="number" id="questionCount" value="2" />
+    <button type="button" class="btn" id="generateQuestions">Генерировать</button>
+</form>
+
+<div id="questionsList">
+    <!-- Вопросы будут добавлены здесь -->
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    var questions = @Html.Raw(Json.Serialize(Model));
+
+    $("#generateQuestions").click(function () {
+        var maxQuestions = $("#setting").data("max-questions");
+        var questionCount = $("#questionCount").val();
+
+        // Проверка, является ли введенное значение числом и не превышает ли максимальное количество
+        if (!isFinite(questionCount) || questionCount <= 0 || questionCount > maxQuestions) {
+            alert("Пожалуйста, введите корректное число вопросов.");
+            return;
+        }
+
+        // Очистим список вопросов
+        $("#questionsList").empty();
+
+        // Генерируем случайные индексы вопросов
+        var randomIndices = [];
+        while (randomIndices.length < questionCount) {
+            var randomNumber = Math.floor(Math.random() * questions.length);
+            if (!randomIndices.includes(randomNumber)) {
+                randomIndices.push(randomNumber);
+            }
+        }
+
+        // Выводим вопросы на страницу
+        randomIndices.forEach(function (index) {
+            var question = questions[index].matter;
+
+            // Создаем контейнер для вопроса
+            var questionContainer = $("<div class='question-container'></div>");
+
+            // Добавляем элемент для вопроса
+            var questionItem = $("<div class='question'></div>").text(question);
+
+            // Добавляем контейнер в список вопросов
+            questionContainer.append(questionItem);
+
+            // Добавляем элементы для ответа
+            var answerItem = $("<div class='answer' id='answer_" + index + "'></div>");
+            var inputItem = $("<input type='text' class='answer-input' id='input_" + index + "'/>");
+            var submitButton = $("<button type='button' class='btn submit-button' data-questionIndex='" + index + "'>Отправить ответ</button>");
+
+            // Добавляем элементы в контейнер
+            questionContainer.append(answerItem);
+            questionContainer.append(inputItem);
+            questionContainer.append(submitButton);
+
+            // Добавляем контейнер в список вопросов
+            $("#questionsList").append(questionContainer);
+
+            // Обработчик события для кнопки отправки ответа
+            submitButton.click(function () {
+                var userAnswer = inputItem.val();
+                var correctAnswer = questions[index].answer; 
+
+                // Проверка ответа
+                if (userAnswer.toLowerCase() === correctAnswer.toLowerCase()) {
+                    // Правильный ответ
+                    questionContainer.css({ backgroundColor: "lightgreen", border: "1px solid green" });
+                    inputItem.prop("disabled", true); // Блокировка поля ввода
+                    submitButton.prop("disabled", true); // Блокировка кнопки отправки
+                } else {
+                    // Неправильный ответ
+                    questionContainer.css({ backgroundColor: "lightcoral", border: "1px solid red" });
+                    inputItem.val(""); // Очищаем поле ввода
+                }
+            });
+        });
+    });
+
+</script>

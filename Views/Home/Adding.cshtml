@@ -1,0 +1,64 @@
+﻿@model IEnumerable<WebApplication3.Models.Question>
+@{
+    ViewData["Adding"] = "Добавление вопроса";
+}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<div id="addQuestionContainer">
+    <h3>Введите вопрос и ответ на него:</h3>
+    <form id="addForm" method="post">
+        <input type="hidden" name="questionId" />
+        <table>
+            <tr>
+                <td>Вопрос:</td>
+                <td><input type="text" name="matter" class="form-control" id="matterInput" /></td>
+            </tr>
+            <tr>
+                <td>Вариант ответа:</td>
+                <td><input type="text" name="answer" class="form-control" id="answerInput" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button class="btn btn-primary" onclick="addQuestion()">Добавить</button></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+    function addQuestion() {
+        var matterInput = $("#matterInput");
+        var answerInput = $("#answerInput");
+        var addButton = $(".btn-primary");
+
+        // Проверка на пустой ввод
+        if (matterInput.val().trim() === "" || answerInput.val().trim() === "") {
+            alert("Введите вопрос и ответ.");
+            return;
+        }
+
+        // Отключение кнопки после ее нажатия
+        addButton.prop("disabled", true);
+
+
+        $.ajax({
+            url: "/Home/Adding",
+            type: "POST",
+            data: $("#addForm").serialize(),
+            success: function (response) {
+                // Обработка успешного ответа
+                alert("Вопрос успешно добавлен!");
+                // Дополнительные действия, если нужно
+            },
+            error: function (error) {
+                // Обработка ошибки
+                alert("Произошла ошибка при добавлении вопроса.");
+            },
+            complete: function () {
+                // Включение кнопки после завершения запроса
+                addButton.prop("disabled", false);
+            }
+        });
+    }
+</script>
+
